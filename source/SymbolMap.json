@@ -1,0 +1,12 @@
+{
+    "functions": [
+        {
+            "name": "?registerButtonDownHandler@InputHandler@@QEAAXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$function@$$A6AXW4FocusImpact@@AEAVIClientInstance@@@Z@3@_N@Z",
+            "address": "0x19597B0"
+        },
+        {
+            "name": "?registerButtonUpHandler@InputHandler@@QEAAXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$function@$$A6AXW4FocusImpact@@AEAVIClientInstance@@@Z@3@_N@Z",
+            "address": "0x1959900"
+        }
+    ]
+}
