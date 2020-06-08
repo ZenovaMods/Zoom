@@ -137,8 +137,6 @@ void _handleDuplicates(class ControlsSettingsScreenController* self, class Remap
 
 class Zoom : public Zenova::Mod {
 	virtual void Start() {
-		//Zenova_Info("Example Mod Start"); //common print methods work as well ie: std::cout << "Example Mod Start" << std::endl;
-
 		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA0FC0)), _populateKeyboardDefaults, (void**)&__populateKeyboardDefaults);
 		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA3860)), _populateGamepadDefaults, (void**)&__populateGamepadDefaults);
 		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x07A4E20)), assignDefaultMapping, (void**)&_assignDefaultMapping); 
@@ -150,10 +148,6 @@ class Zoom : public Zenova::Mod {
 		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0305470)), _handleDuplicates, (void**)&__handleDuplicates);
 
 		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0A76A20)), getFOV, (void**)&_getFOV);
-		//Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1594D20)), registerItems, (void**)&_registerItems);
-		//Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x15A3320)), initCreativeCategories, (void**)&_initCreativeCategories);
-		//Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x15A45F0)), initCreativeItemsCallback, (void**)&_initCreativeItemsCallback);
-		//Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x15A01D0)), initClientData, (void**)&_initClientData);
 	}
 
 	virtual void Update() {}
