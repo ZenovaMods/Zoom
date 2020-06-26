@@ -137,17 +137,17 @@ void _handleDuplicates(class ControlsSettingsScreenController* self, class Remap
 
 class Zoom : public Zenova::Mod {
 	virtual void Start() {
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA0FC0)), _populateKeyboardDefaults, (void**)&__populateKeyboardDefaults);
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA3860)), _populateGamepadDefaults, (void**)&__populateGamepadDefaults);
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x07A4E20)), assignDefaultMapping, (void**)&_assignDefaultMapping); 
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA0FC0)), _populateKeyboardDefaults, (void**)&__populateKeyboardDefaults); // 0x1CC0A40
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AA3860)), _populateGamepadDefaults, (void**)&__populateGamepadDefaults); // 0x1CC2B50
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x07A4E20)), assignDefaultMapping, (void**)&_assignDefaultMapping); // 0x0806630
 
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AAEB80)), _addFullKeyboardGamePlayControls, (void**)&__addFullKeyboardGamePlayControls);
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AB07D0)), _addInvariantGamePlayGameControllerControls, (void**)&__addInvariantGamePlayGameControllerControls);
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AAEB80)), _addFullKeyboardGamePlayControls, (void**)&__addFullKeyboardGamePlayControls); // 0x1CCCEB0
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x1AB07D0)), _addInvariantGamePlayGameControllerControls, (void**)&__addInvariantGamePlayGameControllerControls); // 0x1CCEB90
 
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x079D610)), _registerInputHandlers, (void**)&__registerInputHandlers);
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0305470)), _handleDuplicates, (void**)&__handleDuplicates);
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x079D610)), _registerInputHandlers, (void**)&__registerInputHandlers); // 0x07FEBB0
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0305470)), _handleDuplicates, (void**)&__handleDuplicates); // 0x0338980
 
-		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0A76A20)), getFOV, (void**)&_getFOV);
+		Zenova::Platform::CreateHook(reinterpret_cast<void*>(Zenova::Hook::SlideAddress(0x0A76A20)), getFOV, (void**)&_getFOV); // 0x0AF7DB0
 	}
 
 	virtual void Update() {}
