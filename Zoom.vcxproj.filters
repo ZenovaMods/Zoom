@@ -23,13 +23,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\InputHeaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="source\init.asm">
+    <NASM Include="source\init.asm">
       <Filter>Source Files</Filter>
-    </None>
+    </NASM>
   </ItemGroup>
 </Project>

@@ -163,9 +163,6 @@
     <ClCompile Include="source\Zoom.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\InputHeaders.h" />
-  </ItemGroup>
-  <ItemGroup>
     <NASM Include="source\init.asm">
       <FileType>Document</FileType>
     </NASM>

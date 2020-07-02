@@ -20,9 +20,6 @@ symbol_list = []
 vtable_list = []
 var_list = []
 include_list = []
-include_dict = {}
-include_prefix = ""
-includes_used = []
 cxx_output = ""
 asm_output = ""
 
@@ -56,18 +53,6 @@ def read_json(file):
             for strs in reader[key]:
                 include_list.append(strs)
 
-def read_headers(file):
-    reader = json.load(file)
-    for key in reader:
-        class_name = reader[key]
-        if key == "prefix" and isinstance(class_name, str):
-            global include_prefix
-            include_prefix = class_name
-        elif isinstance(class_name, list):
-            for class_str in class_name:
-                include_dict[class_str] = key
-        elif isinstance(class_name, str):
-            include_dict[class_name] = key
 
 def generate_windows_cpp():
     output_cpp("")
@@ -90,21 +75,10 @@ def generate_init_cpp():
         output_cpp(a)
     output_cpp("")
     for a in var_list:
-        name = a["name"]
-        pointer_pos = name.find("* ") + 1
-        var_type = name[:pointer_pos]
-
-        class_type = name[pointer_pos + 1:name.rfind("::")]
-        include_file = include_dict[class_type]
-        if include_file not in includes_used:
-            output_cpp("#include \"" + include_prefix + include_file + "\"")
-            includes_used.append(include_file)
-
         address = a["address"]
         if address != "":
-            address = " = reinterpret_cast<" + var_type + ">(Zenova::Hook::SlideAddress(" + address + "))"
-            output_cpp(name + address + ";")
-
+            address = " = reinterpret_cast<" + a["name"][:a["name"].rfind("*")+1] + ">(Zenova::Hook::SlideAddress(" + address + "))"
+        output_cpp(a["name"] + address + ";")
     output_cpp("")
     output_cpp("extern \"C\" {")
     for a in symbol_list:
@@ -119,7 +93,7 @@ def generate_init_cpp():
             loc = a["name"].rfind("*") + 1
             while a["name"][loc] == " ":
                 loc += 1
-            output_cpp("\t" + a["name"][loc:] + " = reinterpret_cast<" + a["name"][:a["name"].rfind("*")] + ">(Zenova::Hook::FindVariable(\"" + a["name"] + "\"));")
+            output_cpp("\t" + a["name"][loc:] + " = reinterpret_cast<" + a["name"][:-a["name"].rfind("*")] + ">(Zenova::Hook::FindVariable(\"" + a["name"] + "\"));")
     for a in symbol_list:
         name_legal = mangled_name_to_variable(a["mangled_name"])
         if a["address"] != "":
@@ -136,10 +110,12 @@ def generate_init_cpp():
 #NASM, MASM doesn't allow long identifiers
 def generate_init_func_x86(size):
     if size == 64:
+        word_name = "qword"
         reg = "rax"
         pointer_size = 8
         output_asm("bits 64")
     if size == 32:
+        word_name = "dword"
         reg = "eax"
         pointer_size = 4
 
@@ -155,9 +131,21 @@ def generate_init_func_x86(size):
         output_asm(a["mangled_name"] + ":")
         output_asm("\tmov rax, [rel " + mangled_name_to_variable(a["mangled_name"]) + "_ptr" + "]")
         output_asm("\tjmp rax")
-    i = 0
     for vtable in vtable_list:
+        i = 0
+        vtable_parent_str = vtable["parent"]
+        vtable_parent = {}
+        if vtable_parent_str:
+            vtable_parent = next((x for x in vtable_list if vtable_parent_str == x["name"]), {})
+
         for a in vtable["functions"]:
+            if vtable_parent:
+                vtable_func_noname = a.replace(vtable["name"], vtable_parent["name"], 1)
+                for b in vtable_parent["functions"][i:]:
+                    if vtable_func_noname == b:
+                        break
+                    i += 1
+
             output_asm("global " + a)
             output_asm(a + ":")
             output_asm("\tmov " + reg + ", [rel " + vtable["name"] + "_vtable]")
@@ -202,7 +190,6 @@ for file_path in in_files:
     file_full_path = os.path.abspath(file_path)
     with open(file_path, "r") as f:
         read_json(f)
-read_headers(open("Headers.json", "r"))
 generate_init_func()
 print(cxx_output)
 print(asm_output)
