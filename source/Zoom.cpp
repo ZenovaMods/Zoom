@@ -53,7 +53,7 @@ class Zoom : public Zenova::Mod {
 	virtual void Start() {
 		Zenova::InputManager::instance().addInput("zoom", &handleZoomButton)
 			.setKeyboardMapping('C')
-			.setGamepadMapping(GamepadBinding::DpadLeft, "");
+			.setGamepadMapping(GamepadBinding::DpadLeft);
 
 		Zenova::Hook::Create(&LevelRendererPlayer::getFov, &getFov, &_getFov);
 	}
