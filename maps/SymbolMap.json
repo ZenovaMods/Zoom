@@ -7,6 +7,14 @@
         {
             "name": "?_applyTurnDelta@LocalPlayer@@QEAAXAEBUVec2@@@Z",
             "signature": "E8 ? ? ? ? 48 8B 4D 20 48 33 CC E8 ? ? ? ? 44 0F 28 AC 24 ? ? ? ?"
+        },
+        {
+            "name": "?getSensitivity@Options@@QEBAMW4InputMode@@@Z",
+            "signature": "E8 ? ? ? ? F3 0F 10 0D ? ? ? ? 0F 2F C1 72 09"
+        },
+        {
+            "name": "?getCurrentInputMode@IClientInstance@@QEAA?AW4InputMode@@XZ",
+            "signature": "40 53 48 83 EC 20 48 8B 01 FF 90 ? ? ? ? 48 8B 08"
         }
     ]
 }
