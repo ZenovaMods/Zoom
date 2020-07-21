@@ -280,7 +280,7 @@ void applyTurnDelta(class LocalPlayer* self, const Vec2& input) {
 	IClientInstance& client = self->getClientInstance();
 
 	if (smoothCameraEnabled) {
-		float f = ((client.getOptions().getSensitivity(client.getCurrentInputMode()) * 0.6f) + 0.2f) * 1.5f;
+		float f = ((client.getOptions().getSensitivity(client.getCurrentInputMode()) * 0.6f) + 0.2f) * 0.8f;
 
 		smoothCam.x = filterX.smooth(input.x * f, f * 0.05f);
 		smoothCam.y = filterY.smooth(input.y * f, f * 0.05f);
@@ -303,8 +303,6 @@ void handleCinematicButton(bool pressed) {
 
 class Zoom : public Zenova::Mod {
 	virtual void Start() {
-		Zenova::Platform::DebugPause();
-
 		Zenova::InputManager::addInput("zenova.zoom", &handleZoomButton)
 			.setKeyboardMapping('C')
 			.setGamepadMapping(GamepadBinding::DpadLeft);
