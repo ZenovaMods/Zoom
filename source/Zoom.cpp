@@ -5,8 +5,6 @@
 
 #include "Zenova/Minecraft/Inputs.h"
 
-//#define OPTIFINE
-
 // Globals
 static inline bool zoomEnabled = false;
 static inline bool smoothCameraEnabled = false;
@@ -21,7 +19,7 @@ float (*_getFov)(LevelRendererPlayer*, float, bool);
 float getFov(LevelRendererPlayer* self, float f, bool b) {
 	float fov = _getFov(self, f, b);
 
-#ifdef OPTIFINE
+#ifdef USE_OPTIFINE
 	// optifine method
 	if (zoomEnabled) {
 		fov /= 4.0f;
@@ -59,7 +57,7 @@ public:
 		float currentValue = targetValue - remainingValue;
 		float amount = lastAmount + 0.5f * (currentValue - lastAmount); // lerp
 
-		float sign = (0.0f < currentValue) - (currentValue < 0.0f); // signum
+		float sign = static_cast<float>((0.0f < currentValue) - (currentValue < 0.0f)); // signum
 		if (sign * currentValue > sign * lastAmount) {
 			currentValue = amount;
 		}

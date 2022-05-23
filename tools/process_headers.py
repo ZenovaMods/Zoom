@@ -27,14 +27,9 @@ if not os.path.exists(directory):
 
 file_header_name = "initcpp.h"
 
-out_file_cpp = open(directory + "/initcpp.cpp", "w")
-out_file_header = open(directory + "/" + file_header_name, "w")
-out_file_asm = open(directory + "/initasm.asm", "w")
-
-if(debug_output):
-    print("cxx output: " + out_file_cpp.name)
-    print("hxx output: " + out_file_header.name)
-    print("asm output: " + out_file_asm.name)
+out_file_cpp = None
+out_file_header = None
+out_file_asm = None
 
 version_list = []
 symbol_list = []
@@ -367,17 +362,41 @@ def generate_init_func():
         print(arch + " not supported")
         #generate_init_func_arm()
 
-for file_path in in_files:
-    for glob_file_path in glob(file_path):
-        file_full_path = os.path.abspath(glob_file_path)
-        print("Parsing Symbol Map: " + file_full_path)
-        with open(file_full_path, "r") as f:
-            read_json(f)
-generate_init_func()
-if(debug_output):
-    print(cxx_output)
-    print(hxx_output)
-    print(asm_output)
-out_file_cpp.close()
-out_file_header.close()
-out_file_asm.close()
+def rebuild_symbol_gen():
+    global out_file_cpp, out_file_header, out_file_asm
+    out_file_cpp = open(directory + "/initcpp.cpp", "w")
+    out_file_header = open(directory + "/" + file_header_name, "w")
+    out_file_asm = open(directory + "/initasm.asm", "w")
+
+    if(debug_output):
+        print("cxx output: " + out_file_cpp.name)
+        print("hxx output: " + out_file_header.name)
+        print("asm output: " + out_file_asm.name)
+
+    for file_path in in_files:
+        for glob_file_path in glob(file_path):
+            file_full_path = os.path.abspath(glob_file_path)
+            print("Parsing Symbol Map: " + file_full_path)
+            with open(file_full_path, "r") as f:
+                read_json(f)
+
+    generate_init_func()
+    
+    if(debug_output):
+        print(cxx_output)
+        print(hxx_output)
+        print(asm_output)
+
+    out_file_cpp.close()
+    out_file_header.close()
+    out_file_asm.close()
+
+if os.path.exists(directory + "/initasm.asm"):
+    lastModified = os.path.getmtime(directory + "/initasm.asm")
+    for file_path in in_files:
+        for glob_file_path in glob(file_path):
+            if os.path.getmtime(glob_file_path) > lastModified:
+                rebuild_symbol_gen()
+                break
+else:
+    rebuild_symbol_gen()

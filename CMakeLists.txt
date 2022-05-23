@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 set(ModName Zoom)
 set(SourceDir source)
@@ -8,23 +8,13 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT win64)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-if(NOT DEFINED CMAKE_ASM_NASM_COMPILER)
-    if(DEFINED ENV{ASM_NASM})
-        set(CMAKE_ASM_NASM_COMPILER $ENV{ASM_NASM})
-    elseif(DEFINED ENV{NASMPATH}) # https://github.com/ShiftMediaProject/VSNASM
-        set(CMAKE_ASM_NASM_COMPILER $ENV{NASMPATH})
-    elseif(EXISTS "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/nasm.exe")
-        set(CMAKE_ASM_NASM_COMPILER "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/nasm.exe")
-    # add more cases in the future (like the other visual studios)
-    endif()
-
-    if(DEFINED CMAKE_ASM_NASM_COMPILER)
-        string(REPLACE "\\" "/" CMAKE_ASM_NASM_COMPILER ${CMAKE_ASM_NASM_COMPILER})
-    endif()
-endif()
-
 project(${ModName} CXX ASM_NASM)
-enable_language(ASM_NASM)
+
+# temporary till configs are figured out
+option(ZOOM_USE_ANIMATION "Use animation with zoom" OFF)
+if (NOT ZOOM_USE_ANIMATION)
+    add_compile_definitions(USE_OPTIFINE)
+endif()
 
 if(MSVC)
     set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo" CACHE STRING "" FORCE)
@@ -67,26 +57,17 @@ target_link_libraries(${ModName}
     $ENV{ZENOVA_DATA}/dev/lib/ZenovaAPI.lib
 )
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/resources/modinfo.json" "$ENV{ZENOVA_DATA}/mods/${ModName}/modinfo.json" COPYONLY)
-
-foreach(resource assets;data)
-    FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/${resource}" src)
-    FILE(TO_CMAKE_PATH "$ENV{ZENOVA_DATA}/mods/${ModName}/${resource}" dest)
-
-    if(NOT EXISTS ${dest} AND EXISTS ${src})
-        add_custom_command(TARGET ${ModName}
-            POST_BUILD
-            COMMAND py -3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/add_security.py ${src}
-            COMMAND ${CMAKE_COMMAND} -E create_symlink ${src} ${dest}
-            DEPENDS ${src}
-        )
-    endif()
-endforeach(resource)
-
 add_custom_command(TARGET ${ModName}
     PRE_BUILD
     COMMAND py -3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/process_headers.py -a x64 -p windows -d ${CMAKE_CURRENT_SOURCE_DIR}/${SourceDir}/generated ${CMAKE_CURRENT_SOURCE_DIR}/maps/*.json
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tools/process_headers.py
+)
+
+add_custom_command(TARGET ${ModName}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/resources
+    $ENV{ZENOVA_DATA}/mods/${ModName}
+    COMMENT "Resources copied to $ENV{ZENOVA_DATA}/mods/${ModName}"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/${IncludeDir} PREFIX "Header Files//" FILES ${INCLUDE_LIST})
