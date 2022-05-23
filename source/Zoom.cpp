@@ -310,8 +310,8 @@ class Zoom : public Zenova::Mod {
 		Zenova::InputManager::addInput("zenova.cinematic", &handleCinematicButton)
 			.setKeyboardMapping(KeyboardBinding::F7);
 
-		Zenova::Hook::Create(&LevelRendererPlayer::getFov, &getFov, &_getFov);
-		Zenova::Hook::Create(&LocalPlayer::_applyTurnDelta, &applyTurnDelta, &_applyTurnDelta);
+		Zenova_Hook(LevelRendererPlayer::getFov, &getFov, &_getFov);
+		Zenova_Hook(LocalPlayer::_applyTurnDelta, &applyTurnDelta, &_applyTurnDelta);
 	}
 
 	virtual void Update() {}
