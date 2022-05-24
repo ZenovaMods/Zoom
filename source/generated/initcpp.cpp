@@ -1,5 +1,5 @@
 // This file was automatically generated using tools/process_symbol_map.py
-// Tue May 24 2022 21:08:51 UTC
+// Tue May 24 2022 21:13:02 UTC
 
 #include <Zenova/Hook.h>
 #include <Zenova/Minecraft.h>
@@ -25,4 +25,12 @@ void InitBedrockPointers() {
 
 void InitVersionPointers() {
 	const Zenova::Version& versionId = Zenova::Minecraft::version();
+}
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
+	if(fdwReason == DLL_PROCESS_ATTACH) {
+		InitBedrockPointers();
+		InitVersionPointers();
+	}
+	return TRUE;
 }
