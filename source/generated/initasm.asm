@@ -1,5 +1,5 @@
-; This file was automatically generated using tools/process_headers.py
-; Generated on Mon May 23 2022 07:34:14 UTC
+; This file was automatically generated using tools/process_symbol_map.py
+; Tue May 24 2022 21:08:51 UTC
 bits 64
 SECTION .data
 extern _getFov_LevelRendererPlayer__QEAAMM_N_Z_ptr

@@ -1,5 +1,5 @@
-// This file was automatically generated using tools/process_headers.py
-// Generated on Mon May 23 2022 07:34:14 UTC
+// This file was automatically generated using tools/process_symbol_map.py
+// Tue May 24 2022 21:08:51 UTC
 
 #pragma once
 
@@ -9,3 +9,6 @@ extern "C" {
 	extern void* _getSensitivity_Options__QEBAMW4InputMode___Z_ptr;
 	extern void* _getCurrentInputMode_IClientInstance__QEAA_AW4InputMode__XZ_ptr;
 }
+
+void InitBedrockPointers();
+void InitVersionPointers();
