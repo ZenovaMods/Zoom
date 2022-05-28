@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.12)
 set(ModName Zoom)
 set(SourceDir source)
 set(IncludeDir include)
+set(generated_directory "${CMAKE_CURRENT_SOURCE_DIR}/${SourceDir}/generated")
+set(maps_directory "${CMAKE_CURRENT_SOURCE_DIR}/maps")
 
 set(CMAKE_ASM_NASM_OBJECT_FORMAT win64)
 set(CMAKE_CXX_STANDARD 17)
@@ -27,8 +29,18 @@ if(MSVC)
     endforeach(OUTPUTCONFIG)
 endif()
 
-include_directories("$ENV{ZENOVA_DATA}/dev/inc")
-include_directories("${SourceDir}")
+if(NOT EXISTS ${generated_directory})
+    file(MAKE_DIRECTORY ${generated_directory})
+    file(TOUCH "${generated_directory}/initasm.asm")
+    file(TOUCH "${generated_directory}/initcpp.cpp")
+    file(TOUCH "${generated_directory}/initcpp.h")
+endif()
+
+include_directories(
+    "$ENV{ZENOVA_DATA}/dev/inc"
+    "${IncludeDir}"
+    "${SourceDir}"
+)
 
 file(GLOB_RECURSE INCLUDE_LIST
     "${IncludeDir}/*.hpp"
@@ -57,10 +69,10 @@ target_link_libraries(${ModName}
     $ENV{ZENOVA_DATA}/dev/lib/ZenovaAPI.lib
 )
 
-add_custom_command(TARGET ${ModName}
-    PRE_BUILD
-    COMMAND py -3 $ENV{ZENOVA_DATA}/dev/tools/process_symbol_map.py -e -a x64 -p windows -d ${CMAKE_CURRENT_SOURCE_DIR}/${SourceDir}/generated ${CMAKE_CURRENT_SOURCE_DIR}/maps/*.json
-    DEPENDS $ENV{ZENOVA_DATA}/dev/tools/process_symbol_map.py
+add_custom_command(
+    OUTPUT "${generated_directory}/initcpp.cpp" "${generated_directory}/initasm.asm" "${generated_directory}/initcpp.h"
+    COMMAND py -3 $ENV{ZENOVA_DATA}/dev/tools/process_symbol_map.py -e -a x64 -p windows -d ${generated_directory} ${maps_directory}/*.json
+    DEPENDS $ENV{ZENOVA_DATA}/dev/tools/process_symbol_map.py ${maps_directory}/*.json
 )
 
 add_custom_command(TARGET ${ModName}
