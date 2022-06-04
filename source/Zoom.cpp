@@ -51,20 +51,33 @@ class SmoothFloat {
 	float lastAmount = 0.0f;
 
 public:
-	// todo: figure out the reasoning behind this, mojang's implementation
+	// todo: figure out the reasoning behind mojang's implementation
 	float getNewDeltaValue(float target, float delta) {
+#ifdef PE_ALPHA_SMOOTH
 		targetValue += target;
-		float currentValue = targetValue - remainingValue;
-		float amount = lastAmount + 0.5f * (currentValue - lastAmount); // lerp
+		float value = (targetValue - remainingValue) * delta;
+		lastAmount += (value - lastAmount) * 0.5f;
 
-		float sign = static_cast<float>((0.0f < currentValue) - (currentValue < 0.0f)); // signum
-		if (sign * currentValue > sign * lastAmount) {
-			currentValue = amount;
+		if ((value > 0.0f && value > lastAmount) || (value < 0.0f && value < lastAmount)) {
+			value = lastAmount;
+		}
+
+		remainingValue += value;
+		return value;
+#else // current java
+		targetValue += target;
+		float value = targetValue - remainingValue;
+		float amount = lastAmount + 0.5f * (value - lastAmount); // lerp
+
+		float sign = (value > 0.0f) ? 1.0f : ((value < 0.0f) ? -1.0f : value); // signum
+		if (sign * value > sign * lastAmount) {
+			value = amount;
 		}
 
 		lastAmount = amount;
-		remainingValue += currentValue * delta;
-		return currentValue * delta;
+		remainingValue += value * delta;
+		return value * delta;
+#endif
 	}
 
 	void reset() {

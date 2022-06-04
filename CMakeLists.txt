@@ -13,9 +13,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 project(${ModName} CXX ASM_NASM)
 
 # temporary till configs are figured out
-option(ZOOM_USE_ANIMATION "Use animation with zoom" OFF)
+option(USE_ZOOM_ANIMATION "Use animation with zoom" OFF)
+option(USE_JAVA_SMOOTH "Use Java\'s smoothing" OFF)
 if (NOT ZOOM_USE_ANIMATION)
     add_compile_definitions(USE_OPTIFINE)
+endif()
+if (NOT USE_JAVA_SMOOTH)
+    add_compile_definitions(PE_ALPHA_SMOOTH)
 endif()
 
 if(MSVC)

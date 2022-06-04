@@ -1,6 +1,7 @@
 // This file was automatically generated using tools/process_symbol_map.py
-// Tue May 24 2022 21:13:02 UTC
+// Sat Jun 04 2022 09:04:18 UTC
 
+#include <array>
 #include <Zenova/Hook.h>
 #include <Zenova/Minecraft.h>
 
@@ -8,13 +9,10 @@
 
 using namespace Zenova::Hook;
 
-
-extern "C" {
-	void* _getFov_LevelRendererPlayer__QEAAMM_N_Z_ptr;
-	void* __applyTurnDelta_LocalPlayer__QEAAXAEBUVec2___Z_ptr;
-	void* _getSensitivity_Options__QEBAMW4InputMode___Z_ptr;
-	void* _getCurrentInputMode_IClientInstance__QEAA_AW4InputMode__XZ_ptr;
-}
+void* _getFov_LevelRendererPlayer__QEAAMM_N_Z_ptr;
+void* __applyTurnDelta_LocalPlayer__QEAAXAEBUVec2___Z_ptr;
+void* _getSensitivity_Options__QEBAMW4InputMode___Z_ptr;
+void* _getCurrentInputMode_IClientInstance__QEAA_AW4InputMode__XZ_ptr;
 
 void InitBedrockPointers() {
 	_getFov_LevelRendererPlayer__QEAAMM_N_Z_ptr = reinterpret_cast<void*>(SigscanCall("\xE8\x00\x00\x00\x00\x0F\x28\xF0\xF3\x44\x0F\x10\x3D\x00\x00\x00\x00", "x????xxxxxxxx????"));
