@@ -39,7 +39,7 @@ float getFov(LevelRendererPlayer* self, float f, bool b) {
 	return std::min(std::max(fov, 1.0f), 179.0f);
 }
 
-void handleZoomButton(bool pressed) {
+void handleZoomButton(bool pressed, IClientInstance&) {
 	zoomEnabled = pressed;
 	smoothCameraEnabled = pressed;
 }
@@ -153,33 +153,22 @@ void applyTurnDelta(class LocalPlayer* self, const Vec2& input) {
 	_applyTurnDelta(self, smoothCam);
 }
 
-void handleCinematicButton(bool pressed) {
+void handleCinematicButton(bool pressed, IClientInstance&) {
 	if (pressed) {
 		smoothCameraEnabled = !smoothCameraEnabled;
 	}
 }
 
-class Zoom : public Zenova::Mod {
-	virtual void Start() {
-		Zenova::Platform::DebugPause();
+MOD_FUNCTION void ModLoad(ModContext& ctx) {
+	Zenova::Platform::DebugPause();
 
-		Zenova::InputManager::addInput("zenova.zoom", &handleZoomButton)
-			.setKeyboardMapping('C')
-			.setGamepadMapping(GamepadBinding::DpadLeft);
+	Zenova::InputManager::addInput("zenova.zoom", &handleZoomButton)
+		.setKeyboardMapping('C')
+		.setGamepadMapping(GamepadBinding::DpadLeft);
 
-		Zenova::InputManager::addInput("zenova.cinematic", &handleCinematicButton)
-			.setKeyboardMapping(KeyboardBinding::F7);
+	Zenova::InputManager::addInput("zenova.cinematic", &handleCinematicButton)
+		.setKeyboardMapping(KeyboardBinding::F7);
 
-		Zenova_Hook(LevelRendererPlayer::getFov, &getFov, &_getFov);
-		Zenova_Hook(LocalPlayer::_applyTurnDelta, &applyTurnDelta, &_applyTurnDelta);
-	}
-
-	virtual void Update() {}
-	virtual void Tick() {}
-	virtual void Stop() {}
-	virtual ~Zoom() {}
-};
-
-MOD_FUNCTION Zenova::Mod* CreateMod() {
-	return new Zoom;
+	Zenova_Hook(LevelRendererPlayer::getFov, &getFov, &_getFov);
+	Zenova_Hook(LocalPlayer::_applyTurnDelta, &applyTurnDelta, &_applyTurnDelta);
 }
